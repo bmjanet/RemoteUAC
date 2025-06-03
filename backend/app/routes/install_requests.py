@@ -1,5 +1,11 @@
 # backend/app/routes/install_requests.py
 
+"""
+The FastAPI route “takes in” these POST requests and deserializes them into a Pydantic model.
+This code defines the API endpoints for managing install requests in a FastAPI application.
+It includes endpoints to create a new install request, check the status of an existing request, and approve or deny a request.
+"""
+
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from app.db import crud, database
