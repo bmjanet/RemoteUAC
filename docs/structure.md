@@ -29,7 +29,7 @@ backend/
 │   │   ├── database.py      # Connection setup
 │   │   ├── crud.py          # SQLAlchemy logic
 │   ├── utils/
-│       ├── notifier.py      # Firebase push logic
+│       ├── __init__.py      
 │       └── auth.py          # JWT/Token validation
 ├── tests/
 │   └── test_requests.py

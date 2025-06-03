@@ -1,0 +1,89 @@
+This document contains a list of tests in order to check on the functionality of the backend
+of the RemoteUAC server!! These requests will be sent to backend/app/install_requests.py.
+The returns of each request vary, at the moment they are very *bare* since I don't have a ton of
+functionality!
+
+Each of these were tested on POSTMAN, however you could very well try these on bash using curl.
+
+
+## Health check
+
+GET http://localhost:8000/
+
+return: Response Code = 200 OK
+
+{ "message": "RemoteUAC backend is running." }
+
+
+## Mock POST request
+
+POST http://localhost:8000/api/request
+
+{
+  "device_id": "TEST-DEVICE-01",
+  "app_name": "example_installer.exe",
+  "size": "15MB",
+  "path": "C:/Desktop/Downloads",
+  "download_source": "https://website_example.com/installed",
+  "requested_changes": {
+    "PATH": true,
+    "Registry": ["HKLM\\Software\\Example"]
+  },
+  "timestamp": "2025-06-02T14:00:00"
+}
+
+return: Response Code = 201 Created
+
+{
+    "device_id": "TEST-DEVICE-01",
+    "app_name": "example_installer.exe",
+    "size": "15MB",
+    "path": "C:/Desktop/Downloads",
+    "download_source": "https://website_example.com/installed",
+    "requested_changes": {
+        "PATH": true,
+        "Registry": [
+            "HKLM\\Software\\Example"
+        ]
+    },
+    "timestamp": "2025-06-02T14:00:00",
+    "id": 1,
+    "status": "pending"
+}
+
+
+## Second Device POST as a way to address the id function!
+
+POST http://localhost:8000/api/request
+
+{
+  "device_id": "TEST-DEVICE-02",
+  "app_name": "example_installer.exe",
+  "size": "15MB",
+  "path": "C:/Desktop/Downloads",
+  "download_source": "https://website_example.com/installed",
+  "requested_changes": {
+    "PATH": true,
+    "Registry": ["HKLM\\Software\\Example"]
+  },
+  "timestamp": "2025-06-02T14:00:00"
+}
+
+return: Response code = 201 Created
+
+{
+    "device_id": "TEST-DEVICE-02",
+    "app_name": "example_installer.exe",
+    "size": "15MB",
+    "path": "C:/Desktop/Downloads",
+    "download_source": "https://website_example.com/installed",
+    "requested_changes": {
+        "PATH": true,
+        "Registry": [
+            "HKLM\\Software\\Example"
+        ]
+    },
+    "timestamp": "2025-06-02T14:00:00",
+    "id": 2,
+    "status": "pending"
+}

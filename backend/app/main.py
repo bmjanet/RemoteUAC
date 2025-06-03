@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routes.install_request import router as install_request_router
+from app.routes.install_requests import router as install_request_router
 
 app = FastAPI(
     title="RemoteUAC backend",

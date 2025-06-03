@@ -8,7 +8,7 @@
 #
 # Start Uvicorn with auto-reload for development
 
-cd remoteuac/backend
+# cd remoteuac/backend
 
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 # --reload makes it auto-reload when you change the code
