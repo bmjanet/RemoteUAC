@@ -3,9 +3,12 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from typing import Optional
 
+# The secret key to encode and decode the JWT tokens. Proudly set to a personal value.
 SECRET_KEY = "I-Love-My-Girlfriend"
+# The algorithm used to sign the JWT tokens. HS256 is a common choice so it just seemed alright.
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60  # Change if needed, 60 minutes is default AS OF creation
+# The default expiration time for access tokens in minutes.
+ACCESS_TOKEN_EXPIRE_MINUTES = 60  # Change if needed, 60 minutes is default AS-OF creation
 
 # Generate a JWT token with an expiration time.
 # It copies the data to avoid modifitiyng the original dictionary.
