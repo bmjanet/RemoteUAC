@@ -12,9 +12,17 @@ TO run these tests, ensure the backend server is running:
 
 import requests
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+from jose import jwt
 
 BASE_URL = "http://localhost:8000/api"
+SECRET_KEY = "I-Love-My-Girlfriend"
+ALGORITHM = "HS256"
+
+def get_admin_token():
+    expire = datetime.utcnow() + timedelta(minutes=60)
+    payload = {"sub": "admin_user", "exp": int(expire.timestamp())}
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 def test_create_and_status_flow():
     payload = {
@@ -39,8 +47,9 @@ def test_create_and_status_flow():
     result2 = r2.json()
     assert result2["id"] == req_id
 
-    # Deny the request
-    r3 = requests.post(f"{BASE_URL}/approve/{req_id}?approve=false")
+    # Deny the request with admin token
+    headers = {"Authorization": f"Bearer {get_admin_token()}"}
+    r3 = requests.post(f"{BASE_URL}/approve/{req_id}?approve=false", headers=headers)
     assert r3.status_code == 200
     result3 = r3.json()
     assert result3["status"] == "denied"
