@@ -6,7 +6,7 @@ This code defines the API endpoints for managing install requests in a FastAPI a
 It includes endpoints to create a new install request, check the status of an existing request, and approve or deny a request.
 """
 
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Header
 from sqlalchemy.orm import Session
 from app.db import crud, database
 from app.models.request import InstallRequestCreate, InstallRequestRead, InstallRequestStatus
@@ -20,6 +20,23 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# Dependency to get the current admin user from the authorization header
+# This function checks the token and ensures the user has admin privileges.
+# If the token is invalid or the user is not an admin, it raises an HTTPException with a 401 status code.
+#
+# # Params:
+# - authorization: The authorization header containing the JWT token.
+# Returns:
+# - The payload of the token if valid and the user is an admin.
+def get_current_admin(authorization: str = Header(...)):
+    payload = crud.verify_token(authorization)
+    if payload is None or payload.get("sub") != "admin_user":
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token, or insufficient permissions",
+        )
+    return payload 
 
 @router.post(
     "/request",
@@ -49,11 +66,15 @@ def get_status(request_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Install request not found")
     return request
 
+
+
+# Approve or reject an install request
+# This endpoint allows an admin to approve or reject an install request.
 @router.post(
     "/approve/{request_id}",
     response_model=InstallRequestRead,
 )
-def approve_request(request_id: int, approve: bool, db: Session = Depends(get_db)):
+def approve_request(request_id: int, approve: bool, db: Session = Depends(get_db), _: dict = Depends(get_current_admin)):
     request = crud.get_install_request(db, request_id)
     if not request:
         raise HTTPException(status_code=404, detail="Install request not found")
